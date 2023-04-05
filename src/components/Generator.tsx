@@ -78,7 +78,7 @@ export default () => {
         })
       }
       const timestamp = Date.now()
-      const response = await fetch('http://chat.co-pilot.top/api/generate', {
+      const response = await fetch('https://chat.co-pilot.top/api/generate', {
         method: 'POST',
         body: JSON.stringify({
           messages: requestMessageList,
