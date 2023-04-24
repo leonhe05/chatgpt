@@ -13,7 +13,6 @@ import 'highlight.js/styles/atom-one-dark.css'
   <main >
     <Header />
     <Generator client:load />
-    <Footer />
     <BackTop/>
   </main>
 </Layout>
@@ -35,4 +34,8 @@ async function checkCurrentAuth() {
     window.location.href = '/password'
 }
 checkCurrentAuth()
+
+fetch('https://flask.co-pilot.buzz/online', {
+  method: 'POST'
+});
 </script>
