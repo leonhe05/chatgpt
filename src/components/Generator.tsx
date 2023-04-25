@@ -17,6 +17,14 @@ export default () => {
   const [loading, setLoading] = createSignal(false)
   const [controller, setController] = createSignal<AbortController>(null)
 
+  let audio: HTMLAudioElement
+  let chunks = [] // 用于存储返回的内容
+  let waitingSentence = [] // 待转换的数组
+  let convertResult = []
+  let converting = false
+  let voiceIndex = 0
+  let playIndex = 0
+
   onMount(() => {
     try {
       if (localStorage.getItem('messageList'))
@@ -32,7 +40,65 @@ export default () => {
     onCleanup(() => {
       window.removeEventListener('beforeunload', handleBeforeUnload)
     })
+
+    audio.addEventListener('canplaythrough', () => {
+      audio.play();
+    });
+    audio.onended = () => {
+      const url = convertResult[++playIndex]
+      if (url)
+        audio.src = url
+    }
   })
+
+  const convert = async(text: string, index: number) => {
+    const response = await fetch('https://flask.co-pilot.buzz/convert', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        text: text,
+        rate: 100,
+        model: 'en-US-ChristopherNeural'
+      })
+    });
+    const blob = await response.blob();
+    convertResult[index] = URL.createObjectURL(blob)
+    if(index == 0) {
+      audio.src = convertResult[index]
+    }
+  }
+
+  const speak = async(text: string) => {
+    waitingSentence.push(text)
+    if (!converting) {
+      converting = true;
+      startConvert()
+    }
+  }
+
+  const startConvert = () => {
+    while(true) {
+      const text = waitingSentence.shift()
+      if(text) {
+        convert(text, voiceIndex++)
+      } else if(loading()) {
+        setTimeout(() => {}, 300)
+      } else {
+        converting = false;
+        break;
+      }
+    }
+  }
+
+  const resetAudio = () => {
+    audio.src = undefined;
+    playIndex = 0
+    voiceIndex = 0
+    waitingSentence = []
+    convertResult = []
+  }
 
   const handleBeforeUnload = () => {
     localStorage.setItem('messageList', JSON.stringify(messageList()))
@@ -41,6 +107,23 @@ export default () => {
 
   const handleButtonClick = async() => {
     const inputValue = inputRef.value
+    // const hi = ['hi, ', 'nice ', 'to ', 'meet you.' , 'how are you.', 'what is your name']
+    // for(let char of hi) {
+    //   if (char){
+    //     setCurrentAssistantMessage(currentAssistantMessage() + char)
+  
+    //     chunks.push(char)
+    //     if (char.endsWith('.')) { // 判断是否遇到句号
+    //       const text = chunks.join(''); // 将chunks数组中的文本拼接成完整的一段话
+    //       speak(text); // 调用speak函数转换成blob资源
+    //       chunks = []; // 清空chunks数组
+    //     }
+    //   }
+    // }
+    // const text = chunks.join('')
+    // speak(text)
+    // chunks = []
+    // resetAudio() // TODO
     if (!inputValue)
       return
 
@@ -55,6 +138,7 @@ export default () => {
         content: inputValue,
       },
     ])
+    resetAudio()
     requestWithLatestMessage()
   }
 
@@ -78,7 +162,7 @@ export default () => {
         })
       }
       const timestamp = Date.now()
-      const response = await fetch('https://chat.co-pilot.top/api/generate', {
+      const response = await fetch('/api/generate', {
         method: 'POST',
         body: JSON.stringify({
           messages: requestMessageList,
@@ -112,13 +196,24 @@ export default () => {
           if (char === '\n' && currentAssistantMessage().endsWith('\n'))
             continue
 
-          if (char)
+          if (char){
             setCurrentAssistantMessage(currentAssistantMessage() + char)
+
+            chunks.push(char)
+            if (char.endsWith('.')) { // 判断是否遇到句号
+              const text = chunks.join(''); // 将chunks数组中的文本拼接成完整的一段话
+              speak(text)
+              chunks = []
+            }
+          }
 
           smoothToBottom()
         }
         done = readerDone
       }
+      const text = chunks.join(''); // 将chunks数组中的文本拼接成完整的一段话
+      speak(text)
+      chunks = []
     } catch (e) {
       console.error(e)
       setLoading(false)
@@ -186,6 +281,9 @@ export default () => {
         currentSystemRoleSettings={currentSystemRoleSettings}
         setCurrentSystemRoleSettings={setCurrentSystemRoleSettings}
       />
+      
+      <audio ref={audio} controls={true} style="display:none" />
+
       <Index each={messageList()}>
         {(message, index) => (
           <MessageItem
