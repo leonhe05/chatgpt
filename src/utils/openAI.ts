@@ -62,6 +62,9 @@ export const parseOpenAIStream = (rawResponse: Response) => {
         parser.feed(decoder.decode(chunk))
     },
   })
-
-  return new Response(stream)
+  const headers = new Headers()
+  headers.append('Access-Control-Allow-Origin', '*')
+  return new Response(stream, {
+    headers
+  })
 }
