@@ -78,13 +78,13 @@ export default () => {
     }
   }
 
-  const startConvert = () => {
+  const startConvert = async () => {
     while(true) {
       const text = waitingSentence.shift()
       if(text) {
         convert(text, voiceIndex++)
       } else if(loading()) {
-        setTimeout(() => {}, 300)
+        await Sleep(500)
       } else {
         converting = false;
         break;
@@ -93,11 +93,16 @@ export default () => {
   }
 
   const resetAudio = () => {
-    audio.src = undefined;
+    if (!audio.src)
+      audio.src = undefined;
     playIndex = 0
     voiceIndex = 0
     waitingSentence = []
     convertResult = []
+  }
+
+  const Sleep = (ms)=> {
+    return new Promise(resolve=> setTimeout(resolve, ms))
   }
 
   const handleBeforeUnload = () => {
@@ -107,23 +112,6 @@ export default () => {
 
   const handleButtonClick = async() => {
     const inputValue = inputRef.value
-    // const hi = ['hi, ', 'nice ', 'to ', 'meet you.' , 'how are you.', 'what is your name']
-    // for(let char of hi) {
-    //   if (char){
-    //     setCurrentAssistantMessage(currentAssistantMessage() + char)
-  
-    //     chunks.push(char)
-    //     if (char.endsWith('.')) { // 判断是否遇到句号
-    //       const text = chunks.join(''); // 将chunks数组中的文本拼接成完整的一段话
-    //       speak(text); // 调用speak函数转换成blob资源
-    //       chunks = []; // 清空chunks数组
-    //     }
-    //   }
-    // }
-    // const text = chunks.join('')
-    // speak(text)
-    // chunks = []
-    // resetAudio() // TODO
     if (!inputValue)
       return
 
@@ -281,7 +269,7 @@ export default () => {
         currentSystemRoleSettings={currentSystemRoleSettings}
         setCurrentSystemRoleSettings={setCurrentSystemRoleSettings}
       />
-      
+
       <audio ref={audio} controls={true} style="display:none" />
 
       <Index each={messageList()}>
