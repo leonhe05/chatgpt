@@ -7,7 +7,7 @@ const model = import.meta.env.OPENAI_API_MODEL || 'gpt-3.5-turbo'
 export const generatePayload = (apiKey: string, messages: ChatMessage[]): RequestInit & { dispatcher?: any } => ({
   headers: {
     'Content-Type': 'application/json',
-    'Authorization': `Bearer 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`,
+    'Authorization': `Bearer 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`,
   },
   method: 'POST',
   body: JSON.stringify({
