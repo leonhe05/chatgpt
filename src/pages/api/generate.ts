@@ -27,19 +27,6 @@ export const post: APIRoute = async(context) => {
     }), { status: 401 })
   }
 
-  try {
-      return new Response(JSON.stringify({
-        error: {
-          message: 'Invalid key.',
-        },
-      }), { status: 401 })
-  } catch(error) {
-    return new Response(JSON.stringify({
-      error: {
-        message: 'Meet some errors when verify key, please try later.',
-      },
-    }), { status: 500 })
-  }
   const initOptions = generatePayload(apiKey, messages)
   // #vercel-disable-blocks
   if (httpsProxy)
