@@ -160,6 +160,7 @@ export default () => {
             t: timestamp,
             m: requestMessageList?.[requestMessageList.length - 1]?.content || '',
           }),
+          key: 'demo-key'
         }),
         signal: controller.signal,
       })

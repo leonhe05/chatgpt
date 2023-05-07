@@ -2,7 +2,6 @@
 import { ProxyAgent, fetch } from 'undici'
 // #vercel-end
 import { generatePayload, parseOpenAIStream } from '@/utils/openAI'
-import { verifySignature } from '@/utils/auth'
 import type { APIRoute } from 'astro'
 
 const apiKey = import.meta.env.OPENAI_API_KEY
@@ -12,7 +11,7 @@ const sitePassword = import.meta.env.SITE_PASSWORD
 
 export const post: APIRoute = async(context) => {
   const body = await context.request.json()
-  const { sign, time, messages, pass } = body
+  const { messages, pass, key } = body
   if (!messages) {
     return new Response(JSON.stringify({
       error: {
@@ -27,12 +26,19 @@ export const post: APIRoute = async(context) => {
       },
     }), { status: 401 })
   }
-  if (import.meta.env.PROD && !await verifySignature({ t: time, m: messages?.[messages.length - 1]?.content || '' }, sign)) {
+
+  try {
+      return new Response(JSON.stringify({
+        error: {
+          message: 'Invalid key.',
+        },
+      }), { status: 401 })
+  } catch(error) {
     return new Response(JSON.stringify({
       error: {
-        message: 'Invalid signature.',
+        message: 'Meet some errors when verify key, please try later.',
       },
-    }), { status: 401 })
+    }), { status: 500 })
   }
   const initOptions = generatePayload(apiKey, messages)
   // #vercel-disable-blocks
