@@ -1,4 +1,6 @@
 import { sha256 } from 'js-sha256'
+import { sql, Client } from "@vercel/postgres";
+
 interface AuthPayload {
   t: number
   m: string
@@ -30,3 +32,22 @@ export const verifySignature = async(payload: AuthPayload, sign: string) => {
   const payloadSign = await generateSignature(payload)
   return payloadSign === sign
 }
+
+const client = new Client({
+  user: 'default',
+  database: 'verceldb',
+  password: 's90PUBEMkZoJ',
+  host: 'ep-crimson-moon-652278-pooler.us-west-2.postgres.vercel-storage.com'
+})
+
+export const verifyKey = async() => {
+  await client.connect();
+  const result = await sql`SELECT * FROM members;`;
+  // Equivalent to: await pool.query('SELECT * FROM users WHERE id = $1', [id]);
+  await client.end();
+
+  console.log(result)
+}
+
+
+

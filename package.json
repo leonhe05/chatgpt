@@ -20,6 +20,7 @@
     "@astrojs/vercel": "^3.2.4",
     "@types/webspeechapi": "0.0.14-alpha",
     "@unocss/reset": "^0.50.8",
+    "@vercel/postgres": "^0.1.3",
     "astro": "^2.3.0",
     "eslint": "^8.39.0",
     "eventsource-parser": "^0.1.0",

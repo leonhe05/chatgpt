@@ -3,6 +3,7 @@ import { ProxyAgent, fetch } from 'undici'
 // #vercel-end
 import { generatePayload, parseOpenAIStream } from '@/utils/openAI'
 import type { APIRoute } from 'astro'
+import { verifyKey } from '@/utils/auth'
 
 const apiKey = import.meta.env.OPENAI_API_KEY
 const httpsProxy = import.meta.env.HTTPS_PROXY
@@ -19,6 +20,7 @@ export const post: APIRoute = async(context) => {
       },
     }), { status: 400 })
   }
+  verifyKey()
   if (sitePassword && sitePassword !== pass) {
     return new Response(JSON.stringify({
       error: {
@@ -26,7 +28,11 @@ export const post: APIRoute = async(context) => {
       },
     }), { status: 401 })
   }
-
+  return new Response(JSON.stringify({
+    error: {
+      message: 'Invalid password.',
+    },
+  }), { status: 401 })
   const initOptions = generatePayload(apiKey, messages)
   // #vercel-disable-blocks
   if (httpsProxy)
