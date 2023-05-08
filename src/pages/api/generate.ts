@@ -17,10 +17,15 @@ export const post: APIRoute = async(context) => {
   let begin = new Date().getTime()
   const result = await sql`SELECT * FROM members;`;
   let end = new Date().getTime()
-  console.log('spend: ' + (end - begin))
+  console.log('sql spend: ' + (end - begin))
   console.log(result.rows)
 
-
+  begin = new Date().getTime()
+  await fetch('https://flask.co-pilot.buzz/online', {
+    method: 'POST'
+  });
+  end = new Date().getTime()
+  console.log('fetch spend: ' + (end - begin))
 
 
   const body = await context.request.json()
