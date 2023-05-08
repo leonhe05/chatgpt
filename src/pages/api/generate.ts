@@ -14,11 +14,13 @@ export const post: APIRoute = async(context) => {
 
   console.log(process.env)
 
+  let begin = new Date().getTime()
   const result = await sql`SELECT * FROM members;`;
-  // Equivalent to: await pool.query('SELECT * FROM users WHERE id = $1', [id]);
-  await sql`insert into members values('asdf', 123);`;
+  let end = new Date().getTime()
+  console.log('spend: ' + (end - begin))
+  console.log(result.rows)
 
-  console.log(result)
+
 
 
   const body = await context.request.json()
