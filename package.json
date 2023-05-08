@@ -30,12 +30,9 @@
     "markdown-it": "^13.0.1",
     "markdown-it-highlightjs": "^4.0.1",
     "markdown-it-katex": "^2.0.3",
-    "serverless-mysql": "^1.5.5",
     "solid-js": "1.6.12",
     "solidjs-use": "^1.2.0",
-    "undici": "^5.22.0",
-    "url": "^0.11.0",
-    "util": "^0.12.5"
+    "undici": "^5.22.0"
   },
   "devDependencies": {
     "@evan-yang/eslint-config": "^1.0.9",
@@ -48,8 +45,5 @@
     "eslint-plugin-astro": "^0.24.0",
     "punycode": "^2.3.0",
     "unocss": "^0.50.8"
-  },
-  "browser": {
-    "serverless-mysql": false
   }
 }
