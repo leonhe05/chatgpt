@@ -27,7 +27,7 @@ export const post: APIRoute = async(context) => {
   });
   let c = Date.now()
 
-  console.log('到广州耗时:' + (b-a) + '  到洛杉矶耗时:' + (c-b), ' sql耗时：' + (begin-end))
+  console.log('到广州耗时:' + (b-a) + '  到洛杉矶耗时:' + (c-b), ' sql耗时：' + (end-begin))
 
   const body = await context.request.json()
   const { messages, pass, key } = body
