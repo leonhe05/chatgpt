@@ -48,5 +48,8 @@
     "eslint-plugin-astro": "^0.24.0",
     "punycode": "^2.3.0",
     "unocss": "^0.50.8"
+  },
+  "browser": {
+    "serverless-mysql": false
   }
 }
