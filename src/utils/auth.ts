@@ -1,5 +1,4 @@
 import { sha256 } from 'js-sha256'
-import { sql } from "@vercel/postgres";
 
 interface AuthPayload {
   t: number
@@ -35,11 +34,7 @@ export const verifySignature = async(payload: AuthPayload, sign: string) => {
 
 
 export const verifyKey = async() => {
-  const result = await sql`SELECT * FROM members;`;
-  // Equivalent to: await pool.query('SELECT * FROM users WHERE id = $1', [id]);
-  await sql`insert into members values('asdf', 123);`;
 
-  console.log(result)
 }
 
 

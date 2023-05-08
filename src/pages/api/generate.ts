@@ -3,7 +3,7 @@ import { ProxyAgent, fetch } from 'undici'
 // #vercel-end
 import { generatePayload, parseOpenAIStream } from '@/utils/openAI'
 import type { APIRoute } from 'astro'
-import { verifyKey } from '@/utils/auth'
+import { sql, db } from "@vercel/postgres";
 
 const apiKey = import.meta.env.OPENAI_API_KEY
 const httpsProxy = import.meta.env.HTTPS_PROXY
@@ -11,6 +11,16 @@ const baseUrl = (import.meta.env.OPENAI_API_BASE_URL || 'https://api.openai.com'
 const sitePassword = import.meta.env.SITE_PASSWORD
 
 export const post: APIRoute = async(context) => {
+
+  console.log(process.env)
+
+  const result = await sql`SELECT * FROM members;`;
+  // Equivalent to: await pool.query('SELECT * FROM users WHERE id = $1', [id]);
+  await sql`insert into members values('asdf', 123);`;
+
+  console.log(result)
+
+
   const body = await context.request.json()
   const { messages, pass, key } = body
   if (!messages) {
@@ -20,7 +30,7 @@ export const post: APIRoute = async(context) => {
       },
     }), { status: 400 })
   }
-  verifyKey()
+
   if (sitePassword && sitePassword !== pass) {
     return new Response(JSON.stringify({
       error: {
