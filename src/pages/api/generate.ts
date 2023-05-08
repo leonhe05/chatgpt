@@ -3,7 +3,7 @@ import { ProxyAgent, fetch } from 'undici'
 // #vercel-end
 import { generatePayload, parseOpenAIStream } from '@/utils/openAI'
 import type { APIRoute } from 'astro'
-import { sql, db } from "@vercel/postgres";
+import { verifyKey } from '@/utils/auth'
 
 const apiKey = import.meta.env.OPENAI_API_KEY
 const httpsProxy = import.meta.env.HTTPS_PROXY
@@ -11,22 +11,16 @@ const baseUrl = (import.meta.env.OPENAI_API_BASE_URL || 'https://api.openai.com'
 const sitePassword = import.meta.env.SITE_PASSWORD
 
 export const post: APIRoute = async(context) => {
-
-  console.log(process.env)
-
-  let begin = new Date().getTime()
-  const result = await sql`SELECT * FROM members;`;
-  let end = new Date().getTime()
-  console.log('sql spend: ' + (end - begin))
-  console.log(result.rows)
-
-  begin = new Date().getTime()
+  let a = Date.now()
+  await fetch('https://chat.co-pilot.top/flask/online', {
+    method: 'POST'
+  });
+  let b = Date.now()
   await fetch('https://flask.co-pilot.buzz/online', {
     method: 'POST'
   });
-  end = new Date().getTime()
-  console.log('fetch spend: ' + (end - begin))
-
+  let c = Date.now()
+  console.log('到广州耗时:' + (b-a) + '  到洛杉矶耗时:' + (c-b))
 
   const body = await context.request.json()
   const { messages, pass, key } = body
@@ -37,7 +31,7 @@ export const post: APIRoute = async(context) => {
       },
     }), { status: 400 })
   }
-
+  verifyKey()
   if (sitePassword && sitePassword !== pass) {
     return new Response(JSON.stringify({
       error: {
