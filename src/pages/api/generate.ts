@@ -14,7 +14,7 @@ export const post: APIRoute = async(context) => {
   const headers = await context.request.headers
   const pass = headers.get('pass')
   headers.forEach((value, key, parent) => {
-    console.log(value + key)
+    console.log(key + " : " + value)
   })
   return new Response(JSON.stringify({
     error: {
