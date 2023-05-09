@@ -11,16 +11,7 @@ const sitePassword = import.meta.env.SITE_PASSWORD
 
 export const post: APIRoute = async(context) => {
   const body = await context.request.json()
-  const headers = await context.request.headers
 
-  console.log(context.request.url)
-  console.log(context.url)
-
-  return new Response(JSON.stringify({
-    error: {
-      message: 'No input text.',
-    },
-  }), { status: 400 })
   const { messages } = body
   if (!messages) {
     return new Response(JSON.stringify({
@@ -29,7 +20,7 @@ export const post: APIRoute = async(context) => {
       },
     }), { status: 400 })
   }
-  if (sitePassword && sitePassword !== pass) {
+  if (!context.request.url.includes(sitePassword)) {
     return new Response(JSON.stringify({
       error: {
         message: 'Invalid password.',
