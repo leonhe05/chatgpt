@@ -155,12 +155,11 @@ export default () => {
         body: JSON.stringify({
           messages: requestMessageList,
           time: timestamp,
-          pass: storagePassword,
+          pass: 'hyx123',
           sign: await generateSignature({
             t: timestamp,
             m: requestMessageList?.[requestMessageList.length - 1]?.content || '',
           }),
-          key: 'demo-key'
         }),
         signal: controller.signal,
       })
