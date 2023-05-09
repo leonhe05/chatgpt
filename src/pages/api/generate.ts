@@ -12,8 +12,8 @@ const sitePassword = import.meta.env.SITE_PASSWORD
 export const post: APIRoute = async(context) => {
   let a = Date.now()
   const body = await context.request.json()
-  const pass = await context.request.headers.get("pass")
-  console.log(Date.now() - a)
+  const pass = await context.request.headers.get('pass')
+  console.log(pass)
   const { messages } = body
   if (!messages) {
     return new Response(JSON.stringify({
