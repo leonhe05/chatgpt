@@ -19,7 +19,7 @@ export const post: APIRoute = async(context) => {
       },
     }), { status: 400 })
   }
-  if ('hyx123' !== pass) {
+  if (sitePassword && sitePassword !== pass) {
     return new Response(JSON.stringify({
       error: {
         message: 'Invalid password.',
