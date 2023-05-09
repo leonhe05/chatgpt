@@ -12,10 +12,10 @@ const sitePassword = import.meta.env.SITE_PASSWORD
 export const post: APIRoute = async(context) => {
   const body = await context.request.json()
   const headers = await context.request.headers
-  headers.forEach((value, key, parent) => {
-    console.log(key + " : " + value)
-  })
-  console.log(context.params)
+
+  console.log(context.request.url)
+  console.log(context.url)
+
   return new Response(JSON.stringify({
     error: {
       message: 'No input text.',
