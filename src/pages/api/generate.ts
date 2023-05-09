@@ -6,15 +6,21 @@ import type { APIRoute } from 'astro'
 
 const apiKey = import.meta.env.OPENAI_API_KEY
 const httpsProxy = import.meta.env.HTTPS_PROXY
-const baseUrl = (import.meta.env.OPENAI_API_BASE_URL || 'https://api.openai.com').trim().replace(/\/$/, '')
+const baseUrl = (import.meta.env.OPENAI_API_BASE_URL || 'https://api.open11ai.com').trim().replace(/\/$/, '')
 const sitePassword = import.meta.env.SITE_PASSWORD
 
 export const post: APIRoute = async(context) => {
   const body = await context.request.json()
   const headers = await context.request.headers
   const pass = headers.get('pass')
-  console.log(headers)
-  console.log(pass)
+  headers.forEach((value, key, parent) => {
+    console.log(value + key)
+  })
+  return new Response(JSON.stringify({
+    error: {
+      message: 'No input text.',
+    },
+  }), { status: 400 })
   const { messages } = body
   if (!messages) {
     return new Response(JSON.stringify({
