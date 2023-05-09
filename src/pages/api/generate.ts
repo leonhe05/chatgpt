@@ -12,7 +12,9 @@ const sitePassword = import.meta.env.SITE_PASSWORD
 export const post: APIRoute = async(context) => {
   const body = await context.request.json()
   const headers = await context.request.headers
-  const pass = headers.get('pass')
+  const pass = headers.get('Token')
+  console.log(headers.get('Token'))
+  console.log(headers.get('token'))
   headers.forEach((value, key, parent) => {
     console.log(key + " : " + value)
   })
