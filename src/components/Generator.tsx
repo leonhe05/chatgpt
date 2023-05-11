@@ -1,6 +1,5 @@
 import { Index, Show, createSignal, onCleanup, onMount } from 'solid-js'
 import { useThrottleFn } from 'solidjs-use'
-import { generateSignature } from '@/utils/auth'
 import IconClear from './icons/Clear'
 import MessageItem from './MessageItem'
 import SystemRoleSettings from './SystemRoleSettings'
@@ -52,7 +51,7 @@ export default () => {
   })
 
   const convert = async(text: string, index: number) => {
-    const response = await fetch('https://flask.co-pilot.buzz/convert', {
+    const response = await fetch('https://chat.co-pilot.top/flask/convert', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -138,7 +137,7 @@ export default () => {
     setLoading(true)
     setCurrentAssistantMessage('')
     setCurrentError(null)
-    const storagePassword = localStorage.getItem('pass')
+    const userKey = localStorage.getItem('pass')
     try {
       const controller = new AbortController()
       setController(controller)
@@ -149,18 +148,14 @@ export default () => {
           content: currentSystemRoleSettings(),
         })
       }
-      const timestamp = Date.now()
       const response = await fetch('/api/generate', {
         method: 'POST',
+        headers: {
+          Authorization: userKey
+        },
         body: JSON.stringify({
           messages: requestMessageList,
-          time: timestamp,
-          pass: storagePassword,
-          sign: await generateSignature({
-            t: timestamp,
-            m: requestMessageList?.[requestMessageList.length - 1]?.content || '',
-          }),
-          key: 'demo-key'
+          id: userKey
         }),
         signal: controller.signal,
       })

@@ -11,10 +11,8 @@ const sitePassword = import.meta.env.SITE_PASSWORD
 
 export const post: APIRoute = async(context) => {
   const body = await context.request.json()
-  // eslint-disable-next-line no-console
-  console.log(context.request.headers.get('Authorization'))
 
-  const { messages } = body
+  const { messages, id } = body
   if (!messages) {
     return new Response(JSON.stringify({
       error: {
@@ -25,7 +23,7 @@ export const post: APIRoute = async(context) => {
   if (!context.request.url.includes(sitePassword)) {
     return new Response(JSON.stringify({
       error: {
-        message: 'Invalid password.',
+        message: 'Unauthorized request.',
       },
     }), { status: 401 })
   }
@@ -48,5 +46,5 @@ export const post: APIRoute = async(context) => {
     }), { status: 500 })
   }) as Response
 
-  return parseOpenAIStream(response) as Response
+  return parseOpenAIStream(id, response) as Response
 }
