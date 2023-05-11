@@ -34,16 +34,7 @@ export const parseOpenAIStream = (id: String, rawResponse: Response) => {
         if (event.type === 'event') {
           const data = event.data
           if (data === '[DONE]') {
-            await fetch('https://chat.co-pilot.top/gateway/consume-token', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                id: id,
-                content: content,
-              }),
-            })
+            await consumeToken(id, content)
             controller.close()
             return
           }
