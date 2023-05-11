@@ -34,7 +34,7 @@ export const parseOpenAIStream = (id: String, rawResponse: Response) => {
         if (event.type === 'event') {
           const data = event.data
           if (data === '[DONE]') {
-            const queue = encoder.encode(text)
+            const queue = encoder.encode('[DONE]')
             controller.enqueue(queue)
             await consumeToken(id, content)
             controller.close()
