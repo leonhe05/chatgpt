@@ -34,8 +34,8 @@ export const parseOpenAIStream = (id: String, rawResponse: Response) => {
         if (event.type === 'event') {
           const data = event.data
           if (data === '[DONE]') {
-            consumeToken(id, content);
             controller.close()
+            consumeToken(id, content);
             return
           }
           try {
@@ -63,7 +63,7 @@ export const parseOpenAIStream = (id: String, rawResponse: Response) => {
 }
 
 export const consumeToken = async(id: String, content: String) => {
-  fetch('https://chat.co-pilot.top/gateway/consume-token', {
+  await fetch('https://chat.co-pilot.top/gateway/consume-token', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -73,4 +73,5 @@ export const consumeToken = async(id: String, content: String) => {
       content: content,
     }),
   })
+  console.log("扣取" + id + " :" +content)
 }
