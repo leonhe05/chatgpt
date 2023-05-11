@@ -148,7 +148,7 @@ export default () => {
           content: currentSystemRoleSettings(),
         })
       }
-      const response = await fetch('/api/generate', {
+      const response = await fetch('https://chat.co-pilot.top/gateway/api/generate', {
         method: 'POST',
         headers: {
           Authorization: userKey
