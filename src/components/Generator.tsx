@@ -179,7 +179,8 @@ export default () => {
           const char = decoder.decode(value)
           if (char === '\n' && currentAssistantMessage().endsWith('\n'))
             continue
-
+          if (char === '[DONE]')
+            break
           if (char){
             setCurrentAssistantMessage(currentAssistantMessage() + char)
 
