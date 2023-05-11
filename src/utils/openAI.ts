@@ -30,11 +30,11 @@ export const parseOpenAIStream = (id: String, rawResponse: Response) => {
   let content = ''
   const stream = new ReadableStream({
     async start(controller) {
-      const streamParser = (event: ParsedEvent | ReconnectInterval) => {
+      const streamParser = async (event: ParsedEvent | ReconnectInterval) => {
         if (event.type === 'event') {
           const data = event.data
           if (data === '[DONE]') {
-            fetch('https://chat.co-pilot.top/gateway/consume-token', {
+            await fetch('https://chat.co-pilot.top/gateway/consume-token', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
