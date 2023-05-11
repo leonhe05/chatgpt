@@ -55,7 +55,11 @@ export const parseOpenAIStream = (id: String, rawResponse: Response) => {
         parser.feed(decoder.decode(chunk))
     },
   })
-  return new Response(stream)
+  const headers = new Headers()
+  headers.append('Access-Control-Allow-Origin', '*')
+  return new Response(stream, {
+    headers
+  })
 }
 
 export const consumeToken = async(id: String, content: String) => {
