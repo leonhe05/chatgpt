@@ -27,13 +27,15 @@ export const parseOpenAIStream = (rawResponse: Response) => {
       statusText: rawResponse.statusText,
     })
   }
-
+  let content = ''
   const stream = new ReadableStream({
     async start(controller) {
       const streamParser = (event: ParsedEvent | ReconnectInterval) => {
         if (event.type === 'event') {
           const data = event.data
           if (data === '[DONE]') {
+            // eslint-disable-next-line no-console
+            console.log(content)
             controller.close()
             return
           }
@@ -49,6 +51,7 @@ export const parseOpenAIStream = (rawResponse: Response) => {
             // }
             const json = JSON.parse(data)
             const text = json.choices[0].delta?.content || ''
+            content += text
             const queue = encoder.encode(text)
             controller.enqueue(queue)
           } catch (e) {

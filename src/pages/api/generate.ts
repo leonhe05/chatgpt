@@ -11,6 +11,8 @@ const sitePassword = import.meta.env.SITE_PASSWORD
 
 export const post: APIRoute = async(context) => {
   const body = await context.request.json()
+  // eslint-disable-next-line no-console
+  console.log(context.request.headers.get('Authorization'))
 
   const { messages } = body
   if (!messages) {
