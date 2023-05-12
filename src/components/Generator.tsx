@@ -51,7 +51,7 @@ export default () => {
   })
 
   const convert = async(text: string, index: number) => {
-    const response = await fetch('https://chat.co-pilot.top/flask/convert', {
+    const response = await fetch('https://flask.co-pilot.buzz/convert', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -178,8 +178,10 @@ export default () => {
           const char = decoder.decode(value)
           if (char === '\n' && currentAssistantMessage().endsWith('\n'))
             continue
-          if (char === '[DONE]')
-            break
+          if (char.endsWith('[DONE]')) {
+            char.replaceAll('[DONE]', '')
+            done = true
+          }
           if (char){
             setCurrentAssistantMessage(currentAssistantMessage() + char)
 
