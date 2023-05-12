@@ -154,8 +154,7 @@ export default () => {
           Authorization: userKey
         },
         body: JSON.stringify({
-          messages: requestMessageList,
-          id: userKey
+          messages: requestMessageList
         }),
         signal: controller.signal,
       })

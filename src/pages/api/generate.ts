@@ -12,10 +12,10 @@ const sitePassword = import.meta.env.SITE_PASSWORD
 export const post: APIRoute = async(context) => {
   const body = await context.request.json()
   const headers = await context.request.headers
-  console.log(headers.get('Authorization'))
-  console.log(headers.get('sign'))
+  const key = headers.get('Authorization')
+  const sign = headers.get('sign')
 
-  const { messages, id } = body
+  const { messages } = body
   if (!messages) {
     return new Response(JSON.stringify({
       error: {
@@ -23,7 +23,7 @@ export const post: APIRoute = async(context) => {
       },
     }), { status: 400 })
   }
-  if (!context.request.url.includes(sitePassword)) {
+  if (sign == sitePassword) {
     return new Response(JSON.stringify({
       error: {
         message: 'Unauthorized request.',
@@ -49,5 +49,5 @@ export const post: APIRoute = async(context) => {
     }), { status: 500 })
   }) as Response
 
-  return parseOpenAIStream(id, response) as Response
+  return parseOpenAIStream(key, response) as Response
 }
