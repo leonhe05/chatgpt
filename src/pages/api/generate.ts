@@ -23,7 +23,7 @@ export const post: APIRoute = async(context) => {
       },
     }), { status: 400 })
   }
-  if (sign == sitePassword) {
+  if (sign != sitePassword) {
     return new Response(JSON.stringify({
       error: {
         message: 'Unauthorized request.',
