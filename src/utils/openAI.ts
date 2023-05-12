@@ -67,8 +67,8 @@ export const consumeToken = async(id: String, content: String) => {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      id: id,
-      content: content,
+      id,
+      content,
     }),
   })
 }

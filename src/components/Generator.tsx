@@ -137,7 +137,7 @@ export default () => {
     setLoading(true)
     setCurrentAssistantMessage('')
     setCurrentError(null)
-    const userKey = localStorage.getItem('pass')
+    const userKey = localStorage.getItem('user_key')
     try {
       const controller = new AbortController()
       setController(controller)

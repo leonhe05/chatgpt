@@ -1,0 +1,108 @@
+---
+import Layout from '../layouts/Layout.astro'
+---
+
+<Layout title="Password Protection">
+  <main class="h-screen col-fcc">
+    <div id="input_container" class="mt-2 mb-4">
+      <div class="op-30">Set access key</div>
+      <input id="user_key" type="password" class="gpt-password-input" />
+    </div>
+
+    <div class="mt-2 mb-4">
+      <div class="op-30">Speak after answer</div>
+      <input type="text" id="speakable" class="gpt-password-input" />
+      <ul id="select-speakable" class="select-ul">
+          <li class="option-speakable option-li" value="on">on</li>
+          <li class="option-speakable option-li" value="off">off</li>
+      </ul>
+    </div>
+    <div id="input_speaker" class="mt-2 mb-4">
+      <div class="op-30">Use speaker</div>
+      <input id="speaker" type="text" class="gpt-password-input" />
+    </div>
+    <br>
+    <div id="submit" class="gpt-password-submit">
+      <div class="i-carbon-arrow-right" />
+    </div>
+  </main>
+</Layout>
+
+<script>
+const submitButton = document.getElementById('submit') as HTMLDivElement
+submitButton.onclick = handleSubmit
+async function handleSubmit() {
+  localStorage.setItem('user_key', document.getElementById('user_key').value)
+  localStorage.setItem('speakable', document.getElementById('speakable').value)
+  localStorage.setItem('speaker', document.getElementById('speaker').value)
+  window.location.href = '/'
+}
+
+// int
+const inputSpeakable = document.getElementById('speakable')
+const selectSpeakable = document.getElementById('select-speakable')
+inputSpeakable.addEventListener('focus', () => {
+  selectSpeakable.style.display = 'block'
+}, false)
+inputSpeakable.addEventListener('blur', () => {
+  selectSpeakable.classList.add('disappear')
+  setTimeout(() => {
+    selectSpeakable.style.display = 'none'
+    selectSpeakable.classList.remove('disappear')
+  }, 150)
+}, false)
+
+const itemli = document.getElementsByTagName('li')
+for (let i = 0; i < itemli.length; i++) {
+  itemli[i].onclick = function() {
+    inputSpeakable.value = itemli[i].getAttribute('value')
+    if (inputSpeakable.value === 'on')
+      document.getElementById('input_speaker').style.display = 'block'
+    else
+      document.getElementById('input_speaker').style.display = 'none'
+  }
+}
+const userKey = localStorage.getItem('user_key')
+const speakable = localStorage.getItem('speakable')
+const speaker = localStorage.getItem('speaker')
+if (speakable === 'on')
+  document.getElementById('input_speaker').style.display = 'block'
+else
+  document.getElementById('input_speaker').style.display = 'none'
+
+document.getElementById('user_key').value = userKey
+document.getElementById('speaker').value = speaker
+document.getElementById('speakable').value = speakable
+</script>
+
+<style>
+@keyframes disappear {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+.disappear {
+  animation: disappear 0.2s ease-out 0.1s;
+}
+
+.select-ul {
+  display: none;
+  position: absolute;
+  margin-top: 1rem;
+  width: 15rem;
+  color: rgba(0, 0, 0, 0.82);
+  border-radius: 0.125rem;
+  background-color: #fff;
+  z-index: 2022
+}
+.option-li {
+  padding: 0.5rem
+}
+.option-li:hover {
+  background-color: #e5e5e5;
+}
+
+</style>

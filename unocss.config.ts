@@ -42,7 +42,7 @@ export default defineConfig({
     'gpt-retry-btn': 'fi gap-1 px-2 py-0.5 op-70 border border-slate rounded-md text-sm cursor-pointer hover:bg-slate/10',
     'gpt-back-top-btn': 'fcc p-2.5 text-base rounded-md hover:bg-slate/10 fixed bottom-60px right-20px z-10 cursor-pointer transition-colors',
     'gpt-back-bottom-btn': 'gpt-back-top-btn bottom-20px transform-rotate-180deg',
-    'gpt-password-input': 'px-4 py-3 h-12 rounded-sm bg-(slate op-15) base-focus',
+    'gpt-password-input': 'px-4 py-3 h-12 w-60 rounded-sm bg-(slate op-15) base-focus',
     'gpt-password-submit': 'fcc h-12 w-12 bg-slate cursor-pointer bg-op-20 hover:bg-op-50',
     'gen-slate-btn': 'h-12 px-4 py-2 bg-(slate op-15) hover:bg-op-20 rounded-sm',
     'gen-cb-wrapper': 'h-12 my-4 fcc gap-4 bg-(slate op-15) rounded-sm',
