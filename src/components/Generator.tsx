@@ -148,7 +148,7 @@ export default () => {
           content: currentSystemRoleSettings(),
         })
       }
-      const response = await fetch('https://chat.co-pilot.top/gateway/api/generate', {
+      const response = await fetch('https://chat.co-pilot.top/api/generate', {
         method: 'POST',
         headers: {
           Authorization: userKey
@@ -175,11 +175,12 @@ export default () => {
       while (!done) {
         const { value, done: readerDone } = await reader.read()
         if (value) {
-          const char = decoder.decode(value)
+          let char = decoder.decode(value)
           if (char === '\n' && currentAssistantMessage().endsWith('\n'))
             continue
+
           if (char.endsWith('[DONE]')) {
-            char.replaceAll('[DONE]', '')
+            char = char.replaceAll('[DONE]', '')
             done = true
           }
           if (char){

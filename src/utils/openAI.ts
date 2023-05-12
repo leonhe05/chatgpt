@@ -61,7 +61,7 @@ export const parseOpenAIStream = (id: String, rawResponse: Response) => {
 }
 
 export const consumeToken = async(id: String, content: String) => {
-  await fetch('https://chat.co-pilot.top/gateway/consume-token', {
+  await fetch('https://chat.co-pilot.top/consume-token', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
