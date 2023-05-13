@@ -56,6 +56,10 @@ export const parseOpenAIStream = (id: String, rawResponse: Response) => {
       for await (const chunk of rawResponse.body as any)
         parser.feed(decoder.decode(chunk))
     },
+    async cancel() {
+      console.log('主动关闭连接')
+      await consumeToken(id, content)
+    }
   })
   return new Response(stream)
 }
