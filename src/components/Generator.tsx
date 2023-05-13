@@ -23,6 +23,8 @@ export default () => {
   let converting = false
   let voiceIndex = 0
   let playIndex = 0
+  let model = ''
+  let speakable = 'off'
 
   onMount(() => {
     try {
@@ -31,6 +33,9 @@ export default () => {
 
       if (localStorage.getItem('systemRoleSettings'))
         setCurrentSystemRoleSettings(localStorage.getItem('systemRoleSettings'))
+      
+      model = localStorage.getItem('speaker')
+      speakable = localStorage.getItem('speakable')  
     } catch (err) {
       console.error(err)
     }
@@ -59,7 +64,7 @@ export default () => {
       body: JSON.stringify({
         text: text,
         rate: 100,
-        model: 'en-US-ChristopherNeural'
+        model: model
       })
     });
     const blob = await response.blob();
@@ -171,7 +176,7 @@ export default () => {
       const reader = data.getReader()
       const decoder = new TextDecoder('utf-8')
       let done = false
-
+      let optimizeDone = false
       while (!done) {
         const { value, done: readerDone } = await reader.read()
         if (value) {
@@ -181,26 +186,33 @@ export default () => {
 
           if (char.endsWith('[DONE]')) {
             char = char.replaceAll('[DONE]', '')
-            done = true
+            optimizeDone = true
           }
           if (char){
             setCurrentAssistantMessage(currentAssistantMessage() + char)
 
-            chunks.push(char)
-            if (char.endsWith('.')) { // 判断是否遇到句号
-              const text = chunks.join(''); // 将chunks数组中的文本拼接成完整的一段话
-              speak(text)
-              chunks = []
+            if (speakable === 'on' && model !== '') {
+              chunks.push(char)
+              if (char.includes('.')) { // 判断是否遇到句号
+                const last = chunks.pop()
+                const index = last.indexOf('.')
+                chunks.push(last.substring(0, index + 1))
+                const text = chunks.join('');
+                speak(text)
+                chunks = [last.substring(index + 1)]
+              }
             }
           }
 
           smoothToBottom()
         }
-        done = readerDone
+        done = readerDone || optimizeDone
       }
-      const text = chunks.join(''); // 将chunks数组中的文本拼接成完整的一段话
-      speak(text)
-      chunks = []
+      if (speakable === 'on' && model !== '') {
+        const text = chunks.join(''); // 将chunks数组中的文本拼接成完整的一段话
+        speak(text)
+        chunks = []
+      }
     } catch (e) {
       console.error(e)
       setLoading(false)

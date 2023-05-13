@@ -1,25 +1,47 @@
 ---
 import Layout from '../layouts/Layout.astro'
+
+let langs=["zh-CN","zh-HK","zh-TW","en-US","en-GB","en-AU","en-CA","en-HK","en-IE","en-IN","en-SG","ar-AE","ar-EG","ar-SA","da-DK","de-CH","de-DE","es-ES","es-US","fr-BE","fr-CA","fr-CH","fr-FR","ja-JP","ko-KR","nl-NL","pl-PL","pt-PT","ru-RU","sv-SE","th-TH","tr-TR"]
+
 ---
 
 <Layout title="Password Protection">
   <main class="h-screen col-fcc">
     <div id="input_container" class="mt-2 mb-4">
-      <div class="op-30">Set access key</div>
+      <div class="op-90">Your Available Token Is 
+        <span id='available-token' class="gpt-subtitle">0</span>
+      </div>
+    </div>
+
+    <div id="input_container" class="mt-2 mb-4">
+      <div class="op-30">Set Access Key</div>
       <input id="user_key" type="password" class="gpt-password-input" />
     </div>
 
     <div class="mt-2 mb-4">
-      <div class="op-30">Speak after answer</div>
-      <input type="text" id="speakable" class="gpt-password-input" />
+      <div class="op-30">Speak After Answer</div>
+      <input type="text" id="speakable" readonly="readonly" class="gpt-password-input" />
       <ul id="select-speakable" class="select-ul">
           <li class="option-speakable option-li" value="on">on</li>
           <li class="option-speakable option-li" value="off">off</li>
       </ul>
     </div>
+
+    <div id="input_language" class="mt-2 mb-4">
+      <div class="op-30">Pick Speak Language</div>
+      <input type="text" id="language" readonly="readonly" class="gpt-password-input" />
+      <ul id="select-language" class="select-ul">
+          {langs.map ((item) => (
+            <li class="option-language option-li" value={item}>{item}</li>
+          ))}
+      </ul>
+    </div>
+
     <div id="input_speaker" class="mt-2 mb-4">
-      <div class="op-30">Use speaker</div>
-      <input id="speaker" type="text" class="gpt-password-input" />
+      <div class="op-30">Pick A Speaker</div>
+      <input id="speaker" type="text" readonly="readonly" class="gpt-password-input" />
+      <ul id="select-speaker" class="select-ul">
+      </ul>
     </div>
     <br>
     <div id="submit" class="gpt-password-submit">
@@ -35,6 +57,7 @@ async function handleSubmit() {
   localStorage.setItem('user_key', document.getElementById('user_key').value)
   localStorage.setItem('speakable', document.getElementById('speakable').value)
   localStorage.setItem('speaker', document.getElementById('speaker').value)
+  localStorage.setItem('language', document.getElementById('language').value)
   window.location.href = '/'
 }
 
@@ -52,27 +75,95 @@ inputSpeakable.addEventListener('blur', () => {
   }, 150)
 }, false)
 
-const itemli = document.getElementsByTagName('li')
-for (let i = 0; i < itemli.length; i++) {
-  itemli[i].onclick = function() {
-    inputSpeakable.value = itemli[i].getAttribute('value')
-    if (inputSpeakable.value === 'on')
-      document.getElementById('input_speaker').style.display = 'block'
-    else
-      document.getElementById('input_speaker').style.display = 'none'
+// int
+const inputLanguage = document.getElementById('language')
+const selectLanguage = document.getElementById('select-language')
+inputLanguage.addEventListener('focus', () => {
+  selectLanguage.style.display = 'block'
+}, false)
+inputLanguage.addEventListener('blur', () => {
+  selectLanguage.classList.add('disappear')
+  setTimeout(() => {
+    selectLanguage.style.display = 'none'
+    selectLanguage.classList.remove('disappear')
+  }, 150)
+}, false)
+
+// int
+const inputSpeaker = document.getElementById('speaker')
+const selectSpeaker = document.getElementById('select-speaker')
+inputSpeaker.addEventListener('focus', () => {
+  selectSpeaker.style.display = 'block'
+}, false)
+inputSpeaker.addEventListener('blur', () => {
+  selectSpeaker.classList.add('disappear')
+  setTimeout(() => {
+    selectSpeaker.style.display = 'none'
+    selectSpeaker.classList.remove('disappear')
+  }, 150)
+}, false)
+
+const speakableLi = document.getElementsByClassName('option-speakable')
+for (let i = 0; i < speakableLi.length; i++) {
+  speakableLi[i].onclick = function() {
+    inputSpeakable.value = speakableLi[i].getAttribute('value')
   }
 }
+const languageLi = document.getElementsByClassName('option-language')
+for (let i = 0; i < languageLi.length; i++) {
+  languageLi[i].onclick = function() {
+    inputLanguage.value = languageLi[i].getAttribute('value')
+    initModels(inputLanguage.value)
+  }
+}
+
 const userKey = localStorage.getItem('user_key')
 const speakable = localStorage.getItem('speakable')
 const speaker = localStorage.getItem('speaker')
-if (speakable === 'on')
-  document.getElementById('input_speaker').style.display = 'block'
-else
-  document.getElementById('input_speaker').style.display = 'none'
+const language = localStorage.getItem('language')
 
 document.getElementById('user_key').value = userKey
 document.getElementById('speaker').value = speaker
 document.getElementById('speakable').value = speakable
+document.getElementById('language').value = language
+
+const allModels= ['zh-CN-XiaoxiaoNeural','zh-CN-XiaoyiNeural','zh-CN-YunjianNeural','zh-CN-YunxiNeural','zh-CN-YunxiaNeural','zh-CN-YunyangNeural','zh-CN-liaoning-XiaobeiNeural','zh-CN-shaanxi-XiaoniNeural','zh-HK-HiuGaaiNeural','zh-HK-HiuMaanNeural','zh-HK-WanLungNeural','zh-TW-HsiaoChenNeural','zh-TW-HsiaoYuNeural','zh-TW-YunJheNeural','en-US-AnaNeural','en-US-AriaNeural','en-US-ChristopherNeural','en-US-EricNeural','en-US-GuyNeural','en-US-JennyNeural','en-US-MichelleNeural','en-US-RogerNeural','en-US-SteffanNeural','en-AU-NatashaNeural','en-AU-WilliamNeural','en-CA-ClaraNeural','en-CA-LiamNeural','en-GB-LibbyNeural','en-GB-MaisieNeural','en-GB-RyanNeural','en-GB-SoniaNeural','en-GB-ThomasNeural','en-HK-SamNeural','en-HK-YanNeural','en-SG-LunaNeural','en-SG-WayneNeural','ar-AE-FatimaNeural','ar-AE-HamdanNeural','ar-EG-SalmaNeural','ar-EG-ShakirNeural','ar-SA-HamedNeural','ar-SA-ZariyahNeural','da-DK-ChristelNeural','da-DK-JeppeNeural','de-CH-JanNeural','de-CH-LeniNeural','de-DE-AmalaNeural','de-DE-ConradNeural','de-DE-KatjaNeural','de-DE-KillianNeural','es-ES-AlvaroNeural','es-ES-ElviraNeural','es-ES-ManuelEsCUNeural','es-US-AlonsoNeural','es-US-PalomaNeural','fr-BE-CharlineNeural','fr-BE-GerardNeural','fr-CA-AntoineNeural','fr-CA-JeanNeural','fr-CA-SylvieNeural','fr-CH-ArianeNeural','fr-CH-FabriceNeural','fr-FR-DeniseNeural','fr-FR-EloiseNeural','fr-FR-HenriNeural','ja-JP-KeitaNeural','ja-JP-NanamiNeural','ko-KR-InJoonNeural','ko-KR-SunHiNeural','nl-NL-ColetteNeural','nl-NL-FennaNeural','nl-NL-MaartenNeural','pl-PL-MarekNeural','pl-PL-ZofiaNeural','pt-PT-DuarteNeural','pt-PT-RaquelNeural','ru-RU-DmitryNeural','ru-RU-SvetlanaNeural','sv-SE-MattiasNeural','sv-SE-SofieNeural','th-TH-NiwatNeural','th-TH-PremwadeeNeural','tr-TR-AhmetNeural','tr-TR-EmelNeural']
+
+const speakerElement = document.getElementById('select-speaker')
+function initModels(lang) {
+  speakerElement.innerHTML = '';
+  for (const model of allModels) {
+    if (model.startsWith(lang)) {
+      const li = document.createElement('li')
+      li.classList.add('option-model', 'option-li', 'astro-ONY2UY42')
+      li.setAttribute('value', model)
+      li.innerText = model
+      speakerElement.appendChild(li)
+      li.onclick = function() {
+        inputSpeaker.value = li.getAttribute('value')
+      }
+    }
+  }
+}
+if (language) 
+  initModels(language)
+
+if (userKey) {
+  fetch('https://chat.co-pilot.top/token-info', {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json'
+    },
+    body: JSON.stringify({
+      id: userKey
+    })
+  }).then(response => {
+    return response.json()
+  }).then(data => {
+    if (data.available)
+      document.getElementById('available-token').innerText = data.available
+  });
+}
 </script>
 
 <style>
@@ -97,6 +188,14 @@ document.getElementById('speakable').value = speakable
   border-radius: 0.125rem;
   background-color: #fff;
   z-index: 2022
+}
+#select-language {
+  height: 15rem;
+  overflow-y: auto;
+}
+#select-speaker {
+  height: 15rem;
+  overflow-y: auto;
 }
 .option-li {
   padding: 0.5rem
