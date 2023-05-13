@@ -33,8 +33,10 @@ export default () => {
 
       if (localStorage.getItem('systemRoleSettings'))
         setCurrentSystemRoleSettings(localStorage.getItem('systemRoleSettings'))
-      
-      model = localStorage.getItem('speaker')
+
+      if (localStorage.getItem('speaker'))
+        model = localStorage.getItem('speaker')
+
       speakable = localStorage.getItem('speakable')  
     } catch (err) {
       console.error(err)
@@ -177,6 +179,8 @@ export default () => {
       const decoder = new TextDecoder('utf-8')
       let done = false
       let optimizeDone = false
+
+      const convertSeparator = model?.includes('zh-') ? '。' : '.'
       while (!done) {
         const { value, done: readerDone } = await reader.read()
         if (value) {
@@ -193,9 +197,9 @@ export default () => {
 
             if (speakable === 'on' && model !== '') {
               chunks.push(char)
-              if (char.includes('.')) { // 判断是否遇到句号
+              if (char.includes(convertSeparator)) { // 判断是否遇到句号
                 const last = chunks.pop()
-                const index = last.indexOf('.')
+                const index = last.indexOf(convertSeparator)
                 chunks.push(last.substring(0, index + 1))
                 const text = chunks.join('');
                 speak(text)
