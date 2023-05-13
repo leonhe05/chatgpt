@@ -64,7 +64,7 @@ export default () => {
       body: JSON.stringify({
         text: text,
         rate: 100,
-        model: model
+        model: model + 'Neural'
       })
     });
     const blob = await response.blob();
