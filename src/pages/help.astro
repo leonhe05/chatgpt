@@ -8,13 +8,26 @@ import Layout from '../layouts/Layout.astro'
         使用本站你需要先获取授权码
         <br>
         <br>
-        <p>1. 添加微信：text_to_speech（备注chatgpt），获取免费授权码，内涵 20000 token额度</p>
+        <p>1. 添加微信：text_to_speech（备注chatgpt），获取免费授权码，内含 20000 token额度</p>
         <br>
         <p>2. 将获取到的授权码填入 <a href="/setting" style="text-decoration: underline;" target="blank">setting</a> 页面即可使用</p>
         <br>
         <p>3. 本站也接入微软语音功能，可在 <a href="/setting" style="text-decoration: underline;" target="blank">setting</a> 页面填入key后，继续开启播放语音，选择speaker后即可在每次gpt回答之后自动播放语音</p>
         <br>
         <p>4. 你也可以 <a href="https://ispeaker.cn" style="text-decoration: underline;" target="blank">点此试听</a> 所有speaker音色</p>
+        <br>
+        收费标准
+        <br><br>
+        <p>1. &nbsp; 10元 = 250,000 token; 折合 25,000 token/元</p>
+        <p>2. &nbsp; 30元 = 850,000 token; 折合 28,333 token/元</p>
+        <p>3. &nbsp; 60元 = 1850,000 token; 折合 30,800 token/元</p>
+        <p>4. 120元 = 4100,000 token; 折合 34,166 token/元</p>
+        <br>
+        Token说明
+        <br><br>
+        <p>token是OpenAI对文本切割的单元，可以简单理解为字数，本站计算方式和OpenAI计算方式统一。简单换算大概：1 token = 0.5个中文汉字，1 token = 0.75个英文单词。可以看出英文对话明显更省token。</p>
+        <br>
+        <p>另外，维护对话上下文需要将聊天上下文所有内容打包发给OpenAI处理，因此，多轮连续后消耗的token将会显著增多，所以在对话结束后请及时清除上一轮对话。</p>
       </div>
   </main>
 </Layout>
