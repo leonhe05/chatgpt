@@ -8,7 +8,9 @@ export const post: APIRoute = async(context) => {
   const body = await context.request.json()
 
   const initOptions = generatePayload(body)
-
+  await fetch('https://flask.co-pilot.buzz/online', {
+    method: 'POST'
+  });
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-expect-error
   const response = await fetch(`https://southeastasia.api.speech.microsoft.com/accfreetrial/texttospeech/acc/v3.0-beta1/vcg/speak`, initOptions).catch((err: Error) => {
