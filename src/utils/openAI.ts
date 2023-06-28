@@ -1,82 +1,21 @@
-import { createParser } from 'eventsource-parser'
-import type { ParsedEvent, ReconnectInterval } from 'eventsource-parser'
-import type { ChatMessage } from '@/types'
 
-const model = import.meta.env.OPENAI_API_MODEL || 'gpt-3.5-turbo'
 
-export const generatePayload = (apiKey: string, messages: ChatMessage[]): RequestInit & { dispatcher?: any } => ({
+export const generatePayload = (body): RequestInit & { dispatcher?: any } => ({
   headers: {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer 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`,
+    'authority': "southeastasia.api.speech.microsoft.com",
+    'accept': "*/*",
+    'accept-language': "zh-CN,zh;q=0.9",
+    'customvoiceconnectionid': "1asjf-124kjas8-234j21j-asdf",
+    'origin': "https://speech.microsoft.com",
+    "sec-ch-ua": '"Google Chrome";v="111", "Not(A:Brand";v="8", "Chromium";v="111"',
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": '"Windows"',
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-site",
+    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36",
+    "content-type": "application/json"
   },
   method: 'POST',
-  body: JSON.stringify({
-    model,
-    messages,
-    temperature: 0.6,
-    stream: true,
-  }),
+  body: JSON.stringify(body),
 })
-
-export const parseOpenAIStream = (id: String, rawResponse: Response) => {
-  const encoder = new TextEncoder()
-  const decoder = new TextDecoder()
-  if (!rawResponse.ok) {
-    return new Response(rawResponse.body, {
-      status: rawResponse.status,
-      statusText: rawResponse.statusText,
-    })
-  }
-  let content = ''
-  const stream = new ReadableStream({
-    async start(controller) {
-      const streamParser = async (event: ParsedEvent | ReconnectInterval) => {
-        if (event.type === 'event') {
-          const data = event.data
-          if (data === '[DONE]') {
-            const queue = encoder.encode('[DONE]')
-            controller.enqueue(queue)
-            await consumeToken(id, content)
-            controller.close()
-            return
-          }
-          try {
-            const json = JSON.parse(data)
-            const text = json.choices[0].delta?.content || ''
-            content += text
-            if (content.length > 100) {
-              consumeToken(id, content)
-              content = ''
-            }
-            const queue = encoder.encode(text)
-            controller.enqueue(queue)
-          } catch (e) {
-            controller.error(e)
-          }
-        }
-      }
-
-      const parser = createParser(streamParser)
-      for await (const chunk of rawResponse.body as any)
-        parser.feed(decoder.decode(chunk))
-    },
-    async cancel(reason) {
-      console.log(reason)
-      await consumeToken(id, content)
-    }
-  })
-  return new Response(stream)
-}
-
-export const consumeToken = async(id: String, content: String) => {
-  await fetch('https://chat.co-pilot.top/consume-token', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      id,
-      content,
-    }),
-  })
-}
