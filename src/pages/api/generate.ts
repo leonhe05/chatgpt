@@ -20,5 +20,5 @@ export const post: APIRoute = async(context) => {
     }), { status: 500 })
   }) as Response
 
-  return new Response(response.body, { headers : response.headers })
+  return new Response(response.body, { headers : response.headers, status: response.status })
 }
