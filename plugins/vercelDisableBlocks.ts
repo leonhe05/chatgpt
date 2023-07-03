@@ -6,6 +6,12 @@ export default function plugin() {
         map: null,
       }
     }
+    if (id.includes('pages/api/speak.ts')) {
+      return {
+        code: code.replace(/^.*?#vercel-disable-blocks([\s\S]+?)#vercel-end.*?$/gm, ''),
+        map: null,
+      }
+    }
   }
 
   return {
