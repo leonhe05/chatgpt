@@ -5,7 +5,7 @@ import { generatePayload } from '@/utils/openAI'
 import type { APIRoute } from 'astro'
 import {timestamp} from "solidjs-use";
 
-export const post: APIRoute = async(context) => {
+export const speak: APIRoute = async(context) => {
   const start = timestamp();
   const body = await context.request.json()
 
