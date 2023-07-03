@@ -38,6 +38,10 @@ export const post: APIRoute = async(context) => {
 
   return new Response(response.body, { headers : {
       'Access-Control-Allow-Origin': '*',
+      "Access-Control-Allow-Methods": "POST,GET,OPTIONS,DELETE,HEAD,PUT,PATCH",
+      "Access-Control-Max-Age": "36000",
+      "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept,Authorization,authorization",
+      "Access-Control-Allow-Credentials":"true",
       'Content-Type': 'audio/mpeg'
     }, status: response.status })
 }
