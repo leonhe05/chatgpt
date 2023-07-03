@@ -8,7 +8,7 @@ import {timestamp} from "solidjs-use";
 export const post: APIRoute = async(context) => {
   const start = timestamp();
   const body = await context.request.json()
-
+  console.log(111)
   const initOptions = generatePayload(body)
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-expect-error
