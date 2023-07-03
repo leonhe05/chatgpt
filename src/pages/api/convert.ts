@@ -26,15 +26,17 @@ export const post: APIRoute = async(context) => {
     }
     const initOptions = generatePayload(body)
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
-    const response = await fetch(`https://eastus.api.speech.microsoft.com/accfreetrial/texttospeech/acc/v3.0-beta1/vcg/speak`, initOptions).catch((err: Error) => {
-        return new Response(JSON.stringify({
-            error: {
-                code: err.name,
-                message: err.message,
-            },
-        }), { status: 500 })
-    }) as Response
+    // const response = await fetch(`https://eastus.api.speech.microsoft.com/accfreetrial/texttospeech/acc/v3.0-beta1/vcg/speak`, initOptions).catch((err: Error) => {
+    //     return new Response(JSON.stringify({
+    //         error: {
+    //             code: err.name,
+    //             message: err.message,
+    //         },
+    //     }), { status: 500 })
+    // }) as Response
 
-    return new Response()
+    return new Response(null, { headers : {
+            'Access-Control-Allow-Origin': '*',
+            'Content-Type': 'audio/mpeg'
+        }, status: 200 })
 }
