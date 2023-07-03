@@ -3,12 +3,27 @@ import {  fetch } from 'undici'
 // #vercel-end
 import { generatePayload } from '@/utils/openAI'
 import type { APIRoute } from 'astro'
-import {timestamp} from "solidjs-use";
+import {verifySignature} from "@/utils/auth";
 
 export const post: APIRoute = async(context) => {
-  const start = timestamp();
-  const body = await context.request.json()
-  console.log(111)
+  const { ssml: ssml, sign: sign, time: time, format: format } = await context.request.json()
+  if (!await verifySignature({t: time, m: ssml}, sign)) {
+    return new Response(JSON.stringify({
+      error: {
+        code: 'Forbidden',
+        message: 'You don’t have permission to access this resource.',
+      },
+    }), { status: 400 })
+  }
+
+  const body = {
+    "offsetInPlainText": 0,
+    "properties": {
+      "SpeakTriggerSource": "AccTuningPagePlayButton"
+    },
+    ssml,
+    'ttsAudioFormat': format
+  }
   const initOptions = generatePayload(body)
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-expect-error
@@ -21,6 +36,8 @@ export const post: APIRoute = async(context) => {
     }), { status: 500 })
   }) as Response
 
-  console.log("耗时：" + (timestamp() - start) + "ms")
-  return new Response(response.body, { headers : response.headers, status: response.status })
+  return new Response(response.body, { headers : {
+      'Access-Control-Allow-Origin': '*',
+      'Content-Type': 'audio/mpeg'
+    }, status: response.status })
 }
